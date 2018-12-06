@@ -18,6 +18,8 @@ if window <= 0:
     messagebox.showinfo("에러", "데바데를 찾을수 없습니다.")
 
 elif window > 0:
+
+    # Capture the DBD windows size
     print('DeadByDaylight process Detected')
     size = win32gui.GetWindowRect(window)
     x = size[0]

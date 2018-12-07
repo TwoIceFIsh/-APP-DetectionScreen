@@ -15,12 +15,12 @@ from tkinter import messagebox
 # 로직에 맞으면 이미지 파일 하나를 상단에 계속 띄운다
 
 
-def img_always_on_top(image_path, pos_x, pos_y):
+def img_always_on_top(image_path, pos_x, pos_y, image_size_x, image_size_y):
     original = cv2.imread(image_path, cv2.IMREAD_COLOR)
     cv2.namedWindow(image_path, cv2.WINDOW_NORMAL)
     cv2.setWindowProperty(image_path, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
     win32gui.SetWindowPos(win32gui.FindWindow(None, image_path), win32con.HWND_TOPMOST, pos_x, pos_y, 0, 0, win32con.SWP_SHOWWINDOW)
-    cv2.resizeWindow(image_path, 250, 400)
+    cv2.resizeWindow(image_path, image_size_x, image_size_y)
     cv2.imshow(image_path, original)
 
 
@@ -42,53 +42,28 @@ elif hwnd > 0:
     app.geometry('500x400+200+100')
     app.resizable(False, False)
 
-    in_game_path = ""
     # load file path
-    label = Label(app, text="로비화면 가리개",  width=20, height=1, fg="black", relief="groove")
+    label = Label(app, text="로비화면 player",  width=20, height=1, fg="black", relief="groove")
     label.pack()
 
     if len(os.listdir('lobby')) == 0:
         label2 = Label(app, text="파일이 없습니다", width=20, height=1, fg="red")
         label2.pack()
     else:
-
-        lobby_path = os.listdir('lobby')
-
-        path_lobby = "lobby/"
-        path_lobby += "\n".join(lobby_path)
-        label2 = Label(app, text=os.listdir('lobby'), width=20, height=1, fg="black")
+        label2 = Label(app, text=os.listdir('lobby'), width=150, height=1, fg="black")
         label2.pack()
-
-    label3 = Label(app, text="로고화면 가리개", width=20, height=1, fg="black",relief="groove")
-    label3.pack()
-
-    if len(os.listdir('logo')) == 0:
-        label4 = Label(app, text="파일이 없습니다", width=20, height=1, fg="red",)
-        label4.pack()
-    else:
-        logo_path = os.listdir('logo')
-        path_logo = "logo/"
-        path_logo += "\n".join(logo_path)
-
-        label4 = Label(app, text=os.listdir('logo'), width=20, height=1, fg="black")
-        label4.pack()
-
-    label5 = Label(app, text="인게임 가리개", width=20, height=1, fg="black", relief="groove")
-    label5.pack()
-
     if len(os.listdir('in_game')) == 0:
-        label6 = Label(app, text="파일이 없습니다", width=20, height=1, fg="red")
-        label6.pack()
+        label2 = Label(app, text="파일이 없습니다", width=20, height=1, fg="red")
+        label2.pack()
     else:
-
-        in_game_path = os.listdir('in_game')
-
-        path_game = "in_game/"
-        path_game += "\n".join(in_game_path)
-
-        label6 = Label(app, text=os.listdir('in_game'), width=20, height=1, fg="black")
-        label6.pack()
-
+        label2 = Label(app, text=os.listdir('in_game'), width=150, height=1, fg="black")
+        label2.pack()
+    if len(os.listdir('result')) == 0:
+        label2 = Label(app, text="파일이 없습니다", width=20, height=1, fg="red")
+        label2.pack()
+    else:
+        label2 = Label(app, text=os.listdir('result'), width=150, height=1, fg="black")
+        label2.pack()
     # make buttons
     b = Button(app, text="적용하기", width=15, command=button_click)
     b.pack(padx=10, pady=10)
@@ -99,21 +74,21 @@ elif hwnd > 0:
     # show image
     print('DeadByDaylight process Detected')
 
-    img_always_on_top(str(path_game), 0, 1080)
+    # img_always_on_top(str(path_game), 778, 243, 250, 250)
 
-    img_always_on_top(str(path_logo), 0, 0)
+    # img_always_on_top(str(filenames), 980, 221, 250, 250)
 
-
+    # img_always_on_top(str(path_logo), 1256, 182, 250, 250)
+    #
+    # img_always_on_top(str(path_logo), 107, 937, 250, 250)
+    #
+    # img_always_on_top(str(path_logo), 190, 275, 250, 250)
+    # img_always_on_top(str(path_logo), 190, 389, 250, 250)
+    # img_always_on_top(str(path_logo), 190, 494, 250, 250)
+    # img_always_on_top(str(path_logo), 190, 601, 250, 250)
 
     with mss.mss() as sct:
         while 'Capturing':
-
-            # t2 = threading.Thread(target=img_always_on_top_b, args=(str(path_game), 0, 1080))
-            # t2.start()
-
-
-
-
 
             # get window position
             size = win32gui.GetWindowRect(hwnd)

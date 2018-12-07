@@ -3,6 +3,7 @@ import mss
 import numpy
 import win32gui
 import win32con
+import os
 from tkinter import *
 from tkinter import messagebox
 
@@ -15,12 +16,11 @@ from tkinter import messagebox
 
 
 def img_always_on_top(image_path, pos_x, pos_y):
-
     original = cv2.imread(image_path, cv2.IMREAD_COLOR)
     cv2.namedWindow(image_path, cv2.WINDOW_NORMAL)
     cv2.setWindowProperty(image_path, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-    win32gui.SetWindowPos(win32gui.FindWindow(None, image_path), win32con.HWND_TOPMOST, 0, 1080, pos_x, pos_y, win32con.SWP_SHOWWINDOW)
-    cv2.resizeWindow(image_path, 500, 400)
+    win32gui.SetWindowPos(win32gui.FindWindow(None, image_path), win32con.HWND_TOPMOST, pos_x, pos_y, 0, 0, win32con.SWP_SHOWWINDOW)
+    cv2.resizeWindow(image_path, 250, 400)
     cv2.imshow(image_path, original)
 
 
@@ -32,48 +32,96 @@ if hwnd <= 0:
 
 elif hwnd > 0:
 
+    # button click event
     def button_click():
-        print("button clicked")
-
+        app.destroy()
 
     # create window
     app = Tk()
     app.title("방송 세팅하기")
-    app.geometry('300x100+200+100')
+    app.geometry('500x400+200+100')
+    app.resizable(False, False)
 
-    # make label
-    label = Label(app)
+    in_game_path = ""
+    # load file path
+    label = Label(app, text="로비화면 가리개",  width=20, height=1, fg="black", relief="groove")
     label.pack()
 
-    # make input field
-    entry = Entry(app)
-    entry.bind("<Return>", button_click())
-    entry.pack()
+    if len(os.listdir('lobby')) == 0:
+        label2 = Label(app, text="파일이 없습니다", width=20, height=1, fg="red")
+        label2.pack()
+    else:
+
+        lobby_path = os.listdir('lobby')
+
+        path_lobby = "lobby/"
+        path_lobby += "\n".join(lobby_path)
+        label2 = Label(app, text=os.listdir('lobby'), width=20, height=1, fg="black")
+        label2.pack()
+
+    label3 = Label(app, text="로고화면 가리개", width=20, height=1, fg="black",relief="groove")
+    label3.pack()
+
+    if len(os.listdir('logo')) == 0:
+        label4 = Label(app, text="파일이 없습니다", width=20, height=1, fg="red",)
+        label4.pack()
+    else:
+        logo_path = os.listdir('logo')
+        path_logo = "logo/"
+        path_logo += "\n".join(logo_path)
+
+        label4 = Label(app, text=os.listdir('logo'), width=20, height=1, fg="black")
+        label4.pack()
+
+    label5 = Label(app, text="인게임 가리개", width=20, height=1, fg="black", relief="groove")
+    label5.pack()
+
+    if len(os.listdir('in_game')) == 0:
+        label6 = Label(app, text="파일이 없습니다", width=20, height=1, fg="red")
+        label6.pack()
+    else:
+
+        in_game_path = os.listdir('in_game')
+
+        path_game = "in_game/"
+        path_game += "\n".join(in_game_path)
+
+        label6 = Label(app, text=os.listdir('in_game'), width=20, height=1, fg="black")
+        label6.pack()
 
     # make buttons
-    b = Button(app, text="Click on me!", width=15, command=button_click)
+    b = Button(app, text="적용하기", width=15, command=button_click)
     b.pack(padx=10, pady=10)
 
+    # window execution
     app.mainloop()
 
-    # Capture the DBD windows size
+    # show image
     print('DeadByDaylight process Detected')
-    img_always_on_top('sample.jpg', 0, 1080)
+
+    img_always_on_top(str(path_game), 0, 1080)
+
+    img_always_on_top(str(path_logo), 0, 0)
+
+
 
     with mss.mss() as sct:
-        # Part of the screen to capture
-        # I need to change program scale
-
         while 'Capturing':
 
+            # t2 = threading.Thread(target=img_always_on_top_b, args=(str(path_game), 0, 1080))
+            # t2.start()
+
+
+
+
+
+            # get window position
             size = win32gui.GetWindowRect(hwnd)
             x = size[0]
             y = size[1]
             w = size[2] - x
             h = size[3] - y
-
             monitor = {'top': x, 'left': y, 'width': w, 'height': h}
-            # print(monitor)
             sct.save()
 
             # Get raw pixels from the screen, save it to a Numpy array
@@ -84,8 +132,6 @@ elif hwnd > 0:
             cv2.resizeWindow('DeadByDaylight Recognizer', 600, 400)
             # cv2.setWindowProperty("DeadByDaylight Recognizer", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
             cv2.imshow('DeadByDaylight Recognizer', img)
-
-
 
         # Press "q" to quit
             if cv2.waitKey(25) & 0xFF == ord('q'):

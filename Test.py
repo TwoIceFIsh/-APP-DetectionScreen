@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import os
 
+# x, y data
 x_data = np.array([[0, 0],
                   [0, 1],
                   [1, 0],
@@ -31,7 +32,7 @@ with tf.Session() as sess:
     # Initialize TensorFlow variables
     sess.run(tf.global_variables_initializer())
     saver = tf.train.Saver()
-    for step in range(10001):
+    for step in range(10000):
         sess.run(train, feed_dict={X: x_data, Y: y_data})
 
     # Accuracy report
